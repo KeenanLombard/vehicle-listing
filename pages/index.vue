@@ -16,6 +16,7 @@ const { data, pending, error, refresh } = useAsyncData("stock", async () => {
   const response = await $fetch(
     `https://crm.quickrentals.co.za/items/stock/?fields=*.*.*&limit=${limit}&page=${currentPage.value}&sort[]=${sortOrder.value}`
   );
+  console.log(response);
   return response?.data || [];
 });
 

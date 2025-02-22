@@ -1,5 +1,4 @@
 <!-- @format -->
-<!-- Author: Keenan Lombard -->
 
 <script setup>
 import { ref, onMounted } from "vue";
@@ -9,14 +8,14 @@ import Spinner from "~/components/Spinner.vue";
 const route = useRoute();
 
 const car = ref(null);
+const images = ref(0);
 const loading = ref(false);
 const error = ref(null);
 
-//modal toggle
+// Modal toggle
 const modalVisible = ref(false);
 const selectedImage = ref(null);
 
-//get car details by uid
 const fetchCarDetails = async () => {
   loading.value = true;
   error.value = null;
@@ -26,6 +25,7 @@ const fetchCarDetails = async () => {
       `https://crm.quickrentals.co.za/items/stock/?filter[uid][_eq]=${route.params.uid}&fields=*.*.*`
     );
     car.value = response?.data?.[0] || null;
+    images.value = car.value.images.length;
   } catch (err) {
     error.value = "Failed to load car details.";
   } finally {
@@ -58,7 +58,7 @@ onMounted(fetchCarDetails);
       {{ error }}
     </div>
 
-    <div v-else-if="car">
+    <div v-else-if="car && images > 0">
       <!-- Heading -->
       <div class="text-center mb-6">
         <h1 class="text-4xl font-bold text-gray-900">
@@ -71,11 +71,11 @@ onMounted(fetchCarDetails);
 
       <CarBanner :car="car" />
 
-      <div class="">
-        <!-- Images Grid -->
-        <div class="md:col-span-2 grid grid-cols-2 md:grid-cols-3 gap-4">
+      <!-- Images Section -->
+      <div>
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
           <img
-            v-for="(image, index) in car.images.slice(1)"
+            v-for="(image, index) in car.images"
             :key="index"
             :src="`https://crm.quickrentals.co.za/assets/${image.directus_files_id.filename_disk}`"
             alt="Car Image"
@@ -85,24 +85,27 @@ onMounted(fetchCarDetails);
       </div>
     </div>
 
-    <div v-else class="text-center text-gray-500 text-lg">No car found.</div>
+    <div v-else class="text-center text-gray-500 text-lg">
+      There is no imnages for this vehicle
+      <NuxtLink class="text-blue-500" to="/">Browse Other Vehicles</NuxtLink>
+    </div>
 
     <!-- Modal for Enlarged Image -->
     <Teleport to="body">
       <div
         v-if="modalVisible"
-        class="fixed inset-0 bg-neutral-100 bg-opacity-50 flex justify-center items-center z-50">
-        <div class="bg-white p-4 rounded shadow-lg max-w-lg">
+        class="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+        <div class="relative bg-white p-6 rounded-lg shadow-lg max-w-lg">
           <button
             @click="closeModal"
-            class="absolute font-bold top-2 right-2 text-3xl">
-            CLOSE
+            class="absolute top-2 right-4 text-2xl font-bold text-gray-700 hover:text-red-500 transition">
+            ✖
           </button>
           <img
             v-if="selectedImage"
             :src="`https://crm.quickrentals.co.za/assets/${selectedImage.directus_files_id.filename_disk}`"
             alt="Enlarged Car Image"
-            class="w-full h-[600px] object-cover" />
+            class="w-full h-[600px] object-cover rounded-md" />
         </div>
       </div>
     </Teleport>
