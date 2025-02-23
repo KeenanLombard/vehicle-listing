@@ -8,18 +8,20 @@ import Spinner from "~/components/Spinner.vue";
 const route = useRoute();
 
 const car = ref(null);
+//To check is there is images, There was a bug where-
+//application was stuck in loading state after refresh-
+//this was the fix
 const images = ref(0);
 const loading = ref(false);
 const error = ref(null);
 
-// Modal toggle
 const modalVisible = ref(false);
 const selectedImage = ref(null);
 
+//check formats are correct and images available
 const fetchCarDetails = async () => {
   loading.value = true;
   error.value = null;
-
   try {
     const response = await $fetch(
       `https://crm.quickrentals.co.za/items/stock/?filter[uid][_eq]=${route.params.uid}&fields=*.*.*`
@@ -60,7 +62,7 @@ onMounted(fetchCarDetails);
 
     <div v-else-if="car && images > 0">
       <!-- Heading -->
-      <div class="text-center mb-6">
+      <div class="mb-6">
         <h1 class="text-4xl font-bold text-gray-900">
           {{ car.vehicle_name }}
         </h1>

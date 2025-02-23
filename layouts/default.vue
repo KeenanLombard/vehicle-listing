@@ -1,5 +1,4 @@
 <!-- @format -->
-<!-- Author: Keenan Lombard -->
 
 <template>
   <div>
@@ -9,7 +8,6 @@
         <Navbar />
       </nav>
     </header>
-
     <!-- Page Content -->
     <main>
       <NuxtPage />
@@ -19,8 +17,4 @@
 
 <script setup>
 import Navbar from "~/components/Navbar.vue";
-
-definePageMeta({
-  layout: "custom-layout",
-});
 </script>

@@ -18,6 +18,8 @@ const fetchCars = async () => {
   pending.value = true;
   error.value = null;
 
+  //struggled abit here but resolved using a default url string
+  //and adding filter statements if selected
   try {
     let url = `https://crm.quickrentals.co.za/items/stock/?fields=*.*.*&limit=${limit}&page=${currentPage.value}&sort[]=${sortOrder.value}`;
 
@@ -34,17 +36,16 @@ const fetchCars = async () => {
   }
 };
 
+//watch filter values and does a new fetch if values changes
+//also resets page state
 watch([selectedBrand, currentPage, sortOrder], () => {
   if (selectedBrand.value) {
-    // Reset currentPage to 1 when selectedBrand changes
     currentPage.value = 1;
   }
-  fetchCars(); // Call fetchCars after the change
+  fetchCars();
 });
-// Fetch data initially
-fetchCars();
 
-// Computed property to filter cars based on search query
+fetchCars();
 const filteredCars = computed(() => {
   return data.value;
 });
@@ -68,43 +69,35 @@ const changeSort = (sort) => {
 </script>
 
 <template>
-  <div class="container mx-auto p-6">
-    <!-- Filter by Brand Dropdown -->
-
+  <div class="container mx-auto">
+    <!-- Filter Section -->
     <div
-      class="flex flex-col justify-between lg:flex-row md:flex-col sm:flex-col">
-      <div class="mb-6 flex flex-wrap justify-end gap-4">
-        <label for="brand-filter" class="text-lg my-auto font-semibold"
-          >Filter by Brand:</label
-        >
-        <select
-          v-model="selectedBrand"
-          id="brand-filter"
-          class="border border-gray-300 p-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-          @change="fetchCars">
-          <option value="">All Brands</option>
-          <option value="Toyota">Toyota</option>
-          <option value="Ford">Ford</option>
-          <option value="Nissan">Nissan</option>
-          <option value="Hyundai">Hyundai</option>
-          <option value="Aprilia">Aprilia</option>
-          <option value="Audi">Audi</option>
-          <option value="Renault">Renault</option>
-          <option value="Maserati">Maserati</option>
-          <option value="Mercedes">Mercedes</option>
-          <option value="Kia">Kia</option>
-          <!-- Add more brands as needed -->
-        </select>
-      </div>
-
-      <!-- Sort By : Dropdown -->
-      <div class="mb-6 flex flex-wrap justify-end gap-4">
-        <div class="flex items-center space-x-2">
-          <label for="sort-cars" class="text-lg font-semibold">Sort by:</label>
+      class="border-blue-400 bg-blue-100 border-b mb-4 rounded-b p-6 flex flex-col sm:flex-row lg:flex-row gap-4 justify-between items-center">
+      <div class="flex space-x-4">
+        <div class="flex flex-col sm:flex-row gap-4 sm:w-auto w-full">
+          <select
+            v-model="selectedBrand"
+            id="brand-filter"
+            class="p-4 w-full sm:w-auto border-2 rounded-xl border-blue-800">
+            <option value="">All Brands</option>
+            <option value="Toyota">Toyota</option>
+            <option value="Ford">Ford</option>
+            <option value="Nissan">Nissan</option>
+            <option value="Hyundai">Hyundai</option>
+            <option value="Aprilia">Aprilia</option>
+            <option value="Audi">Audi</option>
+            <option value="Renault">Renault</option>
+            <option value="Maserati">Maserati</option>
+            <option value="Mercedes">Mercedes</option>
+            <option value="Kia">Kia</option>
+          </select>
+        </div>
+        <!-- Sort Dropdown -->
+        <div class="flex flex-col sm:flex-row gap-4 sm:w-auto w-full">
           <select
             v-model="sortOrder"
             id="sort-cars"
-            class="border border-gray-300 p-2 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            class="p-4 w-full sm:w-auto border-2 rounded-xl border-blue-800"
             @change="changeSort(sortOrder)">
             <option value="+make">Make (A-Z)</option>
             <option value="-make">Make (Z-A)</option>
@@ -115,11 +108,12 @@ const changeSort = (sort) => {
           </select>
         </div>
       </div>
-
-      <div class="mb-6 flex flex-wrap justify-end gap-4">
+      <!-- Reset Button -->
+      <div
+        class="w-full sm:w-auto p-4 flex h-full justify-center sm:justify-start">
         <button
-          @click="resetFilters()"
-          class="bg-blue-100 hover:bg-blue-200 text-blue-900 font-semibold rounded-xl p-4">
+          @click="resetFilters"
+          class="p-4 w-full sm:w-auto border-2 rounded-xl border-blue-800 cursor-pointer font-semibold text-blue-900 bg-blue-200 hover:bg-blue-300">
           Reset All Filters
         </button>
       </div>
@@ -140,8 +134,10 @@ const changeSort = (sort) => {
       </p>
     </div>
 
-    <!-- Render Cars -->
-    <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    <!-- Render Car Cards -->
+    <div
+      v-else
+      class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-4">
       <div
         v-for="car in filteredCars"
         :key="car.id"
