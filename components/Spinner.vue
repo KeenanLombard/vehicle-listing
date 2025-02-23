@@ -2,7 +2,7 @@
 
 <template>
   <div
-    class="grid min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
+    class="mx-auto min-h-[140px] w-full place-items-center overflow-x-scroll rounded-lg p-6 lg:overflow-visible">
     <svg
       class="text-gray-300 animate-spin"
       viewBox="0 0 64 64"

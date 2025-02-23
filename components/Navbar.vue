@@ -2,7 +2,6 @@
 
 <script setup>
 import { ref } from "vue";
-import { Teleport } from "vue";
 
 const showModal = ref(false);
 
@@ -17,18 +16,18 @@ const closeModal = () => {
 
 <template>
   <div
-    class="bg-gradient-to-r from-blue-800 to-blue-900 text-white shadow-lg sticky top-0 z-50">
+    class="bg-gradient-to-l from-white to-indigo-300 text-blue-900 shadow-lg sticky top-0 z-50">
     <div class="container mx-auto flex items-center justify-between py-5 px-8">
       <!-- Logo -->
       <h1
         class="text-3xl font-bold tracking-wide cursor-pointer hover:opacity-80 transition"
         @click="$router.push('/')">
-        Keenan Lombard
+        Cars
       </h1>
 
       <!-- Info Button -->
       <button
-        class="bg-white text-blue-900 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-200 hover:scale-105 transition-transform"
+        class="bg-blue-200 text-blue-900 font-semibold py-2 px-4 rounded-lg shadow-md hover:bg-blue-300 hover:scale-105 transition-transform"
         @click="openModal">
         Info
       </button>

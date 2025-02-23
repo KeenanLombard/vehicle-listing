@@ -11,17 +11,17 @@ const currentPage = ref(1);
 const searchQuery = ref("");
 const sortOrder = ref("+make");
 
-// Fetch data based on current page, limit and sorting order
+//make request with page number, limit and sorting order
 const { data, pending, error, refresh } = useAsyncData("stock", async () => {
   const response = await $fetch(
     `https://crm.quickrentals.co.za/items/stock/?fields=*.*.*&limit=${limit}&page=${currentPage.value}&sort[]=${sortOrder.value}`
   );
-  console.log(response);
-  return response?.data || [];
+  return response?.data || []; // Ensures it always returns an array
 });
 
-// Computed property to filter cars based on searchQuery
+//Search local array with make, model and year
 const filteredCars = computed(() => {
+  if (!data.value) return []; // Return an empty array if data.value is null
   if (!searchQuery.value) return data.value; // Return all cars if no search query
   return data.value.filter((car) =>
     `${car.make} ${car.model} ${car.year}`
@@ -33,13 +33,13 @@ const filteredCars = computed(() => {
 // Increment or Decrement currentPage
 const changePage = (page) => {
   currentPage.value = page;
-  refresh(); // Fetch next page
+  refresh();
 };
 
 // Function to change sort order
 const changeSort = (sort) => {
   sortOrder.value = sort;
-  refresh(); // Fetch ordered data
+  refresh();
 };
 </script>
 
@@ -87,7 +87,9 @@ const changeSort = (sort) => {
     </div>
 
     <!-- Loading Animation -->
-    <div v-if="pending" class="flex justify-center items-center h-48">
+    <div
+      v-if="pending"
+      class="flex mx-auto justify-center w-screen items-center h-48">
       <Spinner />
     </div>
 
@@ -102,7 +104,7 @@ const changeSort = (sort) => {
     <!-- Render Cards-->
     <div v-else class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
       <div
-        v-if="filteredCars.length != 0"
+        v-if="filteredCars && filteredCars.length !== 0"
         v-for="car in filteredCars"
         :key="car.id"
         class="bg-white cursor-pointer rounded-lg shadow-md hover:shadow-xl overflow-hidden transition-transform transform hover:scale-105 duration-300">
@@ -123,7 +125,7 @@ const changeSort = (sort) => {
       <p class="text-lg font-semibold">Page {{ currentPage }}</p>
       <button
         @click="changePage(currentPage + 1)"
-        :disabled="data.length < 12"
+        :disabled="data.length < limit"
         class="px-4 py-2 bg-gray-300 rounded disabled:opacity-50">
         Next
       </button>

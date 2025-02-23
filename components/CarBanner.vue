@@ -3,7 +3,7 @@
 <template>
   <div>
     <div
-      class="p-6 text-blue-900 flex justify-between bg-blue-100 rounded-t shadow-lg">
+      class="p-6 text-blue-900 flex-row sm:flex-col gap-2 justify-between bg-blue-100 rounded-t shadow-lg w-full">
       <p><strong>Year:</strong> {{ car.year }}</p>
       <p><strong>Color:</strong> {{ car.color ?? "N/A" }}</p>
       <p><strong>Body:</strong> {{ car.mm_data.body_type ?? "N/A" }} km</p>
@@ -11,7 +11,7 @@
       <p><strong>Doors:</strong> {{ car.mm_data.no_of_doors ?? "N/A" }}</p>
       <p><strong>KM:</strong> {{ car.km ?? "N/A" }}</p>
       <p><strong>Model:</strong> {{ car.model ?? "N/A" }}</p>
-      <p><strong>Varient:</strong> {{ car.variant ?? "N/A" }} HP</p>
+      <p><strong>Variant:</strong> {{ car.variant ?? "N/A" }} HP</p>
     </div>
 
     <!-- Featured Image -->
