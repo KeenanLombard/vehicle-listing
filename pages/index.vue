@@ -12,6 +12,7 @@ const sortOrder = ref("+make");
 const data = ref([]); // To store the fetched data
 const pending = ref(false); // To track loading state
 const error = ref(null); // To track error state
+const totalItems = ref(0);
 
 // Function to fetch data
 const fetchCars = async () => {
@@ -21,14 +22,15 @@ const fetchCars = async () => {
   //struggled abit here but resolved using a default url string
   //and adding filter statements if selected
   try {
-    let url = `https://crm.quickrentals.co.za/items/stock/?fields=*.*.*&limit=${limit}&page=${currentPage.value}&sort[]=${sortOrder.value}`;
+    let url = `https://crm.quickrentals.co.za/items/stock/?fields=*.*.*&meta=*&filter[monthly_rental][_gt]=0&limit=${limit}&page=${currentPage.value}&sort[]=${sortOrder.value}`;
 
     if (selectedBrand.value) {
       url += `&filter[_or][0][make][_contains]=${selectedBrand.value}`;
     }
-
     const response = await $fetch(url);
     data.value = response?.data || [];
+    totalItems.value = response?.meta.filter_count || [];
+    console.log(response);
   } catch (err) {
     error.value = err;
   } finally {
@@ -156,7 +158,9 @@ const changeSort = (sort) => {
         class="px-4 py-2 bg-gray-300 rounded disabled:opacity-50">
         Prev
       </button>
-      <p class="text-lg font-semibold">Page {{ currentPage }}</p>
+      <p class="text-lg font-semibold">
+        Page {{ currentPage }} of {{ Math.ceil(totalItems / 12) }}
+      </p>
       <button
         @click="changePage(currentPage + 1)"
         :disabled="data.length < limit"
